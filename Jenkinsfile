@@ -13,7 +13,13 @@ pipeline {
         }
         stage('Test') { 
             steps {
+                // Debugging: List files to ensure paths exist
+                sh "ls -l ${env.WORKSPACE}"
+                
+                // Update permissions (if necessary)
                 sh "chmod +x -R ${env.WORKSPACE}/latihan"
+                
+                // Run the test script
                 sh './jenkins/scripts/test.sh' 
             }
         }    
