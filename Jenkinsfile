@@ -16,6 +16,11 @@ pipeline {
                 sh "chmod +x -R /var/jenkins_home/workspace/'latihan pipeline'"
                 sh './jenkins/scripts/test.sh' 
             }
+        }
+        stage('Deploy') {
+            sh './jenkins/scripts/deliver.sh'
+            input message :'Jika sudah berhasil menjalankan klik "Proceed" untuk mengakhiri'
+            sh './jenkins/scripts/kill.sh'
         }    
     }
 }
