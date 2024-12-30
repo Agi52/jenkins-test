@@ -1,28 +1,37 @@
 pipeline {
     agent {
         docker {
-            image 'node:16-buster-slim' 
-            args '-p 3000:3000' 
-        }
+    image 'node:lts-buster-slim'
+    args '-p 3000:3000 --network host -v /var/run/docker.sock:/var/run/docker.sock'
+}
+    }
+    environment {
+        CI = 'true'
     }
     stages {
-        stage('Build') { 
+        stage('Build') {
             steps {
                 sh 'npm install'
             }
         }
-        stage('Test') { 
+        stage('Test') {
             steps {
-                sh "chmod +x -R /var/jenkins_home/workspace/'latihan pipeline'"
-                sh './jenkins/scripts/test.sh' 
+                sh './jenkins/scripts/test.sh'
             }
         }
         stage('Deploy') {
             steps {
                 sh './jenkins/scripts/deliver.sh'
                 input message: 'Finished using the website? (Click "Proceed" to continue)'
-                sh './jenkins/scripts/kill.sh'
             }
+        }
+    }
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Please check the logs!'
         }
     }
 }
